@@ -1,59 +1,108 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Review Platform - Backend API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API REST pour l'analyse automatique d'avis clients avec IA.
 
-## About Laravel
+## 🚀 Installation
+```bash
+# Cloner le repo
+git clone https://github.com/votre-username/review-platform.git
+cd review-platform
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# Installer les dépendances
+composer install
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# Copier .env
+cp .env.example .env
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+# Générer la clé
+php artisan key:generate
 
-## Learning Laravel
+# Créer la base de données SQLite
+touch database/database.sqlite
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+# Configurer .env (DB_CONNECTION=sqlite)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Lancer les migrations
+php artisan migrate
 
-## Laravel Sponsors
+# (Optionnel) Créer des données de test
+php artisan db:seed
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+# Démarrer le serveur
+php artisan serve
+```
 
-### Premium Partners
+## 📚 API Endpoints
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Authentification
+- `POST /api/register` - Inscription
+- `POST /api/login` - Connexion
+- `POST /api/logout` - Déconnexion (auth required)
+- `GET /api/user` - Profil utilisateur (auth required)
 
-## Contributing
+### Reviews
+- `GET /api/reviews` - Liste des avis (auth required)
+- `POST /api/reviews` - Créer un avis (auth required)
+- `GET /api/reviews/{id}` - Détail d'un avis (auth required)
+- `PUT /api/reviews/{id}` - Modifier un avis (auth required)
+- `DELETE /api/reviews/{id}` - Supprimer un avis (auth required)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Analyse IA
+- `POST /api/analyze` - Analyser un texte (auth required)
 
-## Code of Conduct
+### Dashboard
+- `GET /api/dashboard` - Statistiques (auth required)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🧪 Credentials de test
 
-## Security Vulnerabilities
+- **Admin** : `admin@example.com` / `password123`
+- **User** : `user@example.com` / `password123`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🛠️ Technologies
 
-## License
+- Laravel 12
+- PHP 8.2+
+- SQLite
+- Laravel Sanctum (API authentication)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 👥 Équipe
+
+- **Personne 1** : Backend Core + Chef de projet ✅
+- **Personne 2** : Authentification
+- **Personne 3** : CRUD Reviews + Module IA
+- **Personne 4** : Dashboard & Statistiques
+- **Personne 5** : Frontend Vue 3
+
+## 📝 Documentation
+
+Import `postman_collection.json` dans Postman pour tester l'API.
+
+## 🔗 Structure du projet
+```
+review-platform/
+├── app/
+│   ├── Http/Controllers/Api/
+│   │   ├── AuthController.php (à implémenter)
+│   │   ├── ReviewController.php (à implémenter)
+│   │   ├── AnalysisController.php (à implémenter)
+│   │   └── DashboardController.php (à implémenter)
+│   ├── Models/
+│   │   ├── User.php ✅
+│   │   └── Review.php ✅
+│   └── Services/
+│       └── SentimentAnalysisService.php (à implémenter)
+├── database/
+│   ├── migrations/ ✅
+│   └── seeders/
+│       └── DatabaseSeeder.php ✅
+├── routes/
+│   └── api.php ✅
+└── README.md
+```
+
+## 🚀 Prochaines étapes
+
+1. **Personne 2** : Implémenter AuthController (register, login, logout)
+2. **Personne 3** : Implémenter ReviewController (CRUD) + Service IA
+3. **Personne 4** : Implémenter DashboardController (statistiques)
+4. **Personne 5** : Créer les composants Vue et intégrer l'API
