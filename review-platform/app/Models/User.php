@@ -24,11 +24,15 @@ class User extends Authenticatable
     ];
 
     protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    // Méthodes de vérification des rôles
+    public function isAdmin(): bool
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->role === 'admin';
     }
 
     // Relation avec Reviews
@@ -41,5 +45,8 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    public function isUser(): bool
+    {
+        return $this->role === 'user';
     }
 }

@@ -52,4 +52,9 @@ class DatabaseSeeder extends Seeder
             'topics' => ['price'],
         ]);
     }
+{
+    $this->call([
+        UserSeeder::class,
+    ]);
+}
 }
