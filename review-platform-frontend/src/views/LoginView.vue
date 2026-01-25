@@ -24,19 +24,35 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-// IMPORTATION (Attention au chemin)
 import LoginForm from "../components/LoginForm.vue";
+import { login } from "../api/auth"; // Utilise ton fichier auth.js que tu as créé
 
 const isLoading = ref(false);
 const router = useRouter();
 
-const handleLogin = async (data) => {
+const handleLogin = async (credentials) => {
   isLoading.value = true;
-  console.log("Données reçues du composant :", data);
-  // Simulation de délai API
-  await new Promise(resolve => setTimeout(resolve, 1200));
-  isLoading.value = false;
-  router.push("/dashboard"); 
+  
+  try {
+    // 1. Appel réel à l'API Laravel
+    const response = await login(credentials);
+    
+    // 2. Si ça marche, on stocke le token
+    // Note: Vérifie dans Postman si ton back renvoie 'token' ou 'access_token'
+    const token = response.data.token || response.data.access_token;
+    localStorage.setItem("token", token);
+
+    // 3. Redirection
+    router.push("/dashboard");
+
+  } catch (error) {
+    // En cas d'erreur (401, 404, 500...), on affiche le message du back
+    console.error("Erreur API:", error.response?.data);
+    const errorMsg = error.response?.data?.message || "Identifiants invalides";
+    alert(errorMsg);
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 
