@@ -4,34 +4,59 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Review;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    /**
-     * Obtenir les statistiques du tableau de bord
-     * Retourne le nombre total d'avis, la note moyenne et les avis récents de l'utilisateur
-     */
-    public function index(Request $request): JsonResponse
+    public function stats()
     {
-        // Récupérer l'ID de l'utilisateur authentifié
-        $userId = auth()->id();
+        try {
+            $total = Review::count();
 
-        // Construire les statistiques du tableau de bord
-        $stats = [
-            // Nombre total d'avis de l'utilisateur
-            'total_reviews' => Review::where('user_id', $userId)->count(),
-            // Note moyenne des avis (0 par défaut)
-            'average_rating' => Review::where('user_id', $userId)->avg('rating') ?? 0,
-            // 5 avis les plus récents de l'utilisateur
-            'recent_reviews' => Review::where('user_id', $userId)
+            if ($total === 0) {
+                return response()->json([
+                    'positive' => 0,
+                    'negative' => 0,
+                    'neutral' => 0,
+                    'average_score' => 0,
+                    'top_topics' => [],
+                    'recent_reviews' => []
+                ]);
+            }
+
+            // 1. Comptage par sentiment (Requis par le projet)
+            $positive = Review::where('sentiment', 'positive')->count();
+            $negative = Review::where('sentiment', 'negative')->count();
+            $neutral  = Review::where('sentiment', 'neutral')->count();
+
+            // 2. Moyenne des scores (Correction: 'score' au lieu de 'rating')
+            $average_score = Review::avg('score');
+
+            // 3. Top 3 thèmes (Extraction propre du JSON)
+            $topics = Review::pluck('topics')->flatten()->filter();
+            $top_topics = $topics->countBy()
+                ->sortDesc()
+                ->take(3)
+                ->keys()
+                ->toArray();
+
+            // 4. 5 avis les plus récents (Avec auteur)
+            $recent_reviews = Review::with('user:id,name')
                 ->latest()
-                ->limit(5)
-                ->get(),
-        ];
+                ->take(5)
+                ->get();
 
-        // Retourner les statistiques en JSON
-        return response()->json($stats);
+            return response()->json([
+                'positive' => round(($positive / $total) * 100, 1),
+                'negative' => round(($negative / $total) * 100, 1),
+                'neutral'  => round(($neutral / $total) * 100, 1),
+                'average_score' => round($average_score, 1),
+                'top_topics' => $top_topics,
+                'recent_reviews' => $recent_reviews
+            ]);
+        } catch (\Exception $e) {
+            // Si ça plante encore, Postman affichera l'erreur précise ici
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }
