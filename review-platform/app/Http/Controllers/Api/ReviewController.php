@@ -6,9 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\Review;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Services\ReviewAnalysisService;
 
 class ReviewController extends Controller
 {
+
+    protected $analysisService;
+
+    public function __construct(ReviewAnalysisService $analysisService)
+    {
+        $this->analysisService = $analysisService;
+    }
     /**
      * Afficher la liste de tous les avis
      */
@@ -27,7 +35,6 @@ class ReviewController extends Controller
     {
         // Valider les données de l'avis
         $validated = $request->validate([
-            'title' => 'required|string',
             'content' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
         ]);
@@ -37,6 +44,14 @@ class ReviewController extends Controller
             ...$validated,
             'user_id' => auth()->id(),
         ]);
+
+        //  Analyser le texte via le service
+        // Dans ton ReviewController.php
+        $analysis = $this->analysisService->analyze($request->content, $request->rating);
+
+        //  Mettre à jour l'avis avec sentiment, score et topics
+        $review->update($analysis);
+
 
         // Retourner l'avis créé avec le code HTTP 201 (Created)
         return response()->json($review, 201);
@@ -57,17 +72,22 @@ class ReviewController extends Controller
     public function update(Request $request, Review $review): JsonResponse
     {
         // Vérifier l'autorisation de modification
-        $this->authorize('update', $review);
+        if ($review->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
 
         // Valider les données mises à jour
         $validated = $request->validate([
-            'title' => 'string',
             'content' => 'string',
             'rating' => 'integer|min:1|max:5',
         ]);
 
         // Mettre à jour l'avis
         $review->update($validated);
+
+        // Ré-analyser le texte après modification
+        $analysis = $this->analysisService->analyze($review->content);
+        $review->update($analysis);
 
         // Retourner l'avis mis à jour en JSON
         return response()->json($review);
@@ -77,15 +97,14 @@ class ReviewController extends Controller
      * Supprimer un avis
      * Vérifier que l'utilisateur a le droit de supprimer cet avis
      */
-    public function destroy(Review $review): JsonResponse
+     public function destroy(Request $request, Review $review)
     {
-        // Vérifier l'autorisation de suppression
-        $this->authorize('delete', $review);
+        if ($review->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
 
-        // Supprimer l'avis
         $review->delete();
 
-        // Retourner une réponse vide avec le code HTTP 204 (No Content)
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Avis supprimé']);
     }
 }

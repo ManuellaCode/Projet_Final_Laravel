@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Créer un admin
+        // 1. Créer un admin
         $admin = User::create([
             'name' => 'Admin User',
             'email' => 'admin@example.com',
@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        // Créer un utilisateur normal
+        // 2. Créer un utilisateur normal
         $user = User::create([
             'name' => 'John Doe',
             'email' => 'user@example.com',
@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'user',
         ]);
 
-        // Créer quelques avis de test
+        // 3. Créer quelques avis de test
         Review::create([
             'user_id' => $user->id,
             'content' => 'Excellent service, livraison rapide et produit de qualité !',
@@ -51,10 +51,8 @@ class DatabaseSeeder extends Seeder
             'score' => 65,
             'topics' => ['price'],
         ]);
+
+        // Optionnel : Appeler d'autres seeders si nécessaire
+        // $this->call([ UserSeeder::class ]);
     }
-{
-    $this->call([
-        UserSeeder::class,
-    ]);
-}
 }

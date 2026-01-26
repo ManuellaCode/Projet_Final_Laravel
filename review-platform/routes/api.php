@@ -25,5 +25,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/analyze', [AnalysisController::class, 'analyze']);
 
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+    //Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::middleware('auth:sanctum')->get('/dashboard/stats', [DashboardController::class, 'stats']);
 });
