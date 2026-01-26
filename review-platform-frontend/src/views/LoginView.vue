@@ -25,7 +25,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import LoginForm from "../components/LoginForm.vue";
-import { login } from "../api/auth"; // Utilise ton fichier auth.js que tu as créé
+import { login } from "../api/auth";
 
 const isLoading = ref(false);
 const router = useRouter();
@@ -34,15 +34,13 @@ const handleLogin = async (credentials) => {
   isLoading.value = true;
   
   try {
-    // 1. Appel réel à l'API Laravel
+    // Appel de l'api pour se connecter
     const response = await login(credentials);
     
-    // 2. Si ça marche, on stocke le token
-    // Note: Vérifie dans Postman si ton back renvoie 'token' ou 'access_token'
     const token = response.data.token || response.data.access_token;
     localStorage.setItem("token", token);
 
-    // 3. Redirection
+    //Redirection
     router.push("/dashboard");
 
   } catch (error) {

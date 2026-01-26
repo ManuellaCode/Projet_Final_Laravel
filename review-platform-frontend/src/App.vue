@@ -91,7 +91,6 @@ body { margin: 0; background: var(--bg-main); font-family: 'Plus Jakarta Sans', 
   box-shadow: 10px 0 30px rgba(0,0,0,0.1);
 }
 
-/* Logo */
 .sidebar-logo {
   display: flex;
   align-items: center;
@@ -111,7 +110,7 @@ body { margin: 0; background: var(--bg-main); font-family: 'Plus Jakarta Sans', 
   box-shadow: 0 8px 16px rgba(188, 108, 37, 0.25);
 }
 
-.logo-svg { width: 24px; height: 24px; } /* stroke="white" est défini directement dans le SVG */
+.logo-svg { width: 24px; height: 24px; } 
 
 .brand-name { 
   font-size: 1.5rem; 
@@ -122,7 +121,6 @@ body { margin: 0; background: var(--bg-main); font-family: 'Plus Jakarta Sans', 
 
 .brand-name span { color: var(--accent); }
 
-/* Navigation Styles (inchangés car ils sont déjà top) */
 .nav-label {
   font-size: 0.75rem;
   font-weight: 700;

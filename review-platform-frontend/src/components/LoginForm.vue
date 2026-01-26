@@ -91,7 +91,7 @@ input:focus { outline: none; border-color: #bc6c25; background: white; box-shado
 }
 .submit-button:hover:not(:disabled) { background: #bc6c25; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(188, 108, 37, 0.2); }
 
-/* Animation de chargement */
+
 .loader-dots {
   width: 40px; height: 10px; margin: 0 auto;
   background: radial-gradient(circle closest-side, currentColor 90%, #0000) 0% 50%,

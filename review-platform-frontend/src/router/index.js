@@ -12,7 +12,7 @@ const routes = [
   },
   { 
     path: "/dashboard", 
-    name: "dashboard", // On donne un nom à la route
+    name: "dashboard", 
     component: DashboardView 
   },
   { 
